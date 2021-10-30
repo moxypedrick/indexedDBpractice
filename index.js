@@ -61,20 +61,22 @@ window.onload = function(){
         let objectStore = db.transaction('notes_os').objectStore('notes_os');
         objectStore.openCursor().onsuccess = function(e){
             let cursor = e.target.result;
-
+            console.log(cursor);
             if(cursor){
                 const listItem = document.createElement('li');
-                const h3 = document.createElement('hs');
+                const h3 = document.createElement('h3');
                 const para = document.createElement('p');
-
-                h3.textContent = cusror.value.title;
+                listItem.appendChild(h3);
+                listItem.appendChild(para);
+                list.appendChild(listItem);
+                h3.textContent = cursor.value.title;
                 para.textContent = cursor.value.body;
 
                 listItem.setAttribute('data-note-id',cursor.value.id);
 
                 const deleteBtn = document.createElement('button');
                 listItem.appendChild(deleteBtn);
-                deleteBtn.textContent = 'Delet';
+                deleteBtn.textContent = 'Delete';
                 deleteBtn.onclick = deleteItem;
 
                 cursor.continue();
@@ -84,7 +86,7 @@ window.onload = function(){
                     listItem.textContent = 'No notes stored';
                     list.appendChild(listItem);
                 }
-                console.log('notes all displayed');
+            console.log('notes all displayed');
             }
         };
     }
@@ -92,7 +94,7 @@ window.onload = function(){
     function deleteItem(e){
         let noteId = Number(e.target.parentNode.getAttribute('data-note-id'));
         let transaction = db.transaction(['notes_os'],'readwrite');
-        let objectStore = transction.objectStore('notes_os');
+        let objectStore = transaction.objectStore('notes_os');
 
         let request = objectStore.delete(noteId);
 
